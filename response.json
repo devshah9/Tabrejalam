@@ -1,0 +1,27 @@
+{
+  "strategy_name": "MACD",
+  "timeframe": "S",
+  "passphrase": "somelongstring123",
+  "time": "2021-12-05T18:05:27Z",
+  "exchange": "BITSTAMP",
+  "ticker": "BTCUSD",
+  "bar": {
+    "time": "2021-12-05T18:05:26Z",
+    "open": 49273.68,
+    "high": 49273.68,
+    "low": 49273.68,
+    "close": 49273.68,
+    "volume": 0.032
+  },
+  "strategy": {
+    "position_size": 0,
+    "order_action": "buy",
+    "order_contracts": 0.030133,
+    "order_price": 49273.700000000004,
+    "order_id": "Close entry(s) order SLPShort",
+    "market_position": "flat",
+    "market_position_size": 0,
+    "prev_market_position": "short",
+    "prev_market_position_size": 0.030133
+  }
+}
