@@ -64,11 +64,22 @@
           <tr>
             <th class="table-active">${data["data"][i]["strategy"]["name"]}
             </th>`;
+            if (data["data"][i]["buy"] !== null) {
+              text += `
+              <th class="table-active">${data["data"][i]["buy"]["time_frame"]}</th>
+              <th class="table-active">${data["data"][i]["buy"]["stockname"]}</th>
+              `
+            }
+            else if (data["data"][i]["sell"] !== null) {
+              text += `
+            <th class="table-active">${data["data"][i]["sell"]["time_frame"]}</th>
+            <th class="table-active">${data["data"][i]["sell"]["stockname"]}</th>
+              `
+            }
+
           if (data["data"][i]["buy"] !== null) {
             text += `
-          <th class="table-active">${data["data"][i]["buy"]["time_frame"]}</th>
-          <th class="table-active">${data["data"][i]["buy"]["stockname"]}</th>
-          <th class="table-warning">${data["data"][i]["buy"]["time"]}</th>
+          <th class="table-warning">${data["data"][i]["buy"]["time"].split('.')[0]}</th>
           <th class="table-warning">${data["data"][i]["buy"]["date"]}</th>
           <th class="table-warning">${Number(data["data"][i]["buy"]["quanty"]).toFixed(2)}</th>
           <th class="table-warning">${Number(data["data"][i]["buy"]["price"]).toFixed(2)}</th>
@@ -77,8 +88,6 @@
           <th class="table-warning">${Number(data["data"][i]["buy"]["amt"]).toFixed(2)}</th>`;
           } else {
             text += `
-          <th class="table-active"></th>
-          <th class="table-active"></th>
           <th class="table-warning"></th>
           <th class="table-warning"></th>
           <th class="table-warning"></th>
@@ -89,7 +98,7 @@
           }
           if (data["data"][i]["sell"] !== null) {
             text += `
-          <th class="table-danger">${data["data"][i]["sell"]["time"]}</th>
+          <th class="table-danger">${data["data"][i]["sell"]["time"].split('.')[0]}</th>
           <th class="table-danger">${data["data"][i]["sell"]["date"]}</th>
           <th class="table-danger">${Number(data["data"][i]["sell"]["quanty"]).toFixed(2)}</th>
           <th class="table-danger">${Number(data["data"][i]["sell"]["price"]).toFixed(2)}</th>

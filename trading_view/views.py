@@ -1,15 +1,7 @@
-import decimal
-from datetime import date
-from json import dumps
 
 import yaml
 from asgiref.sync import async_to_sync
-from channels import layers
 from channels.layers import get_channel_layer
-from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import JsonResponse
-from django.http.response import HttpResponse
 from django.shortcuts import render
 
 from trading_view.consumers import Stockinfoserializer
@@ -46,7 +38,7 @@ def data(request, *args, **kwargs):
 
             stockinfo = StockInfo.objects.filter(strategy=strategy)
             stockinfo = stockinfo.filter(buy = None)
-            stockinfo = stockinfo.filter(sell__time_frame=dict_data["timeframe"], sell__stockname = dict_data["ticker"], sell__quanty=dict_data["strategy"]["order_contracts"])
+            stockinfo = stockinfo.filter(sell__time_frame=dict_data["timeframe"], sell__stockname = dict_data["ticker"], sell__quanty=-dict_data["strategy"]["order_contracts"])
             stockinfo = stockinfo.first()
             if stockinfo:
                 stockinfo.buy = buy_model
