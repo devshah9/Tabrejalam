@@ -12,55 +12,202 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
     crossorigin="anonymous"
   />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+  />
 
   <body>
     <div class="container">
+      <div class="mt-5 input-group">
+        <div class="d-flex" style="width: 100%; height: 30px">
+          <label for="select1" style="width: 15%">Select strategy : </label>
+
+          <select
+            class="form-select w-25"
+            aria-label="Default select example"
+            id="select1"
+          >
+            <option disabled selected>-----</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="getOption()">
+            Check
+          </button>
+        </div>
+      </div>
+      <div class="mt-1 input-group">
+        <label for="datepicker" style="width: 15%">Select Date-Range : </label>
+        <input type="text" id="datepicker" name="datefilter" value="" />
+
+        <button class="btn btn-primary btn-sm" onclick="getDate()">
+          Check
+        </button>
+      </div>
+      <div>
+        <button class="btn btn-primary btn-sm" onclick="get_all_data()">
+          check1
+        </button>
+      </div>
+      <div id="clear-search"></div>
       <div class="mt-5">
         <table class="table table-responsive table-bordered table-sm">
           <thead>
             <tr>
               <th class="table-active">Strategy</th>
               <th class="table-active">FRAME TIME</th>
-              <th class="table-active">STOCK NAME</th>
+              <th class="table-active">SYMBOL NAME</th>
               <th class="table-warning">Buy Time</th>
               <th class="table-warning">DATE</th>
               <th class="table-warning">QTY</th>
               <th class="table-warning">Price</th>
-              <th class="table-warning">BRK</th>
-              <th class="table-warning">NRATE</th>
               <th class="table-warning">AMT</th>
               <th class="table-danger">Buy Time</th>
               <th class="table-danger">DATE</th>
               <th class="table-danger">QTY</th>
               <th class="table-danger">Price</th>
-              <th class="table-danger">BRK</th>
-              <th class="table-danger">NRATE</th>
               <th class="table-danger">AMT</th>
               <th class="table-success">Total</th>
             </tr>
           </thead>
+
           <tbody id="data"></tbody>
         </table>
       </div>
     </div>
-  </body>
-  <script>
-    window.addEventListener("DOMContentLoaded", (event) => {
-      var socket = new WebSocket("ws://" + window.location.host + "/data/");
-      
-      if (socket.readyState == WebSocket.OPEN) {
-        socket.onopen();
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"
+    ></script>
+    <script>
+      $(function () {
+        $('input[name="datefilter"]').daterangepicker({
+          autoUpdateInput: false,
+          locale: {
+            cancelLabel: "Clear",
+          },
+        });
+
+        $('input[name="datefilter"]').on(
+          "apply.daterangepicker",
+          function (ev, picker) {
+            $(this).val(
+              picker.startDate.format("MM/DD/YYYY") +
+                "-" +
+                picker.endDate.format("MM/DD/YYYY")
+            );
+          }
+        );
+
+        $('input[name="datefilter"]').on(
+          "cancel.daterangepicker",
+          function (ev, picker) {
+            $(this).val("");
+          }
+        );
+      });
+    </script>
+    <script>
+      function getDate() {
+        selectElement = document.querySelector("#datepicker").value;
+        if (selectElement === "") {
+          alert("Select a Date");
+        } else {
+          window.location.href =
+            window.location.origin + `?date=${selectElement}`;
+        }
       }
-      socket.onopen = function open() {
-        console.log("WebSockets connection created.");
-      };
-      socket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log(data);
-   
-        var text = "";
-        for (let i = 0, len = data["data"].length; i < len; i++) {
-          text += `
+      function getOption() {
+        selectElement = document.querySelector("#select1");
+        output = selectElement.options[selectElement.selectedIndex].value;
+        /*console.log(window.location)*/
+        if (output == "-----") {
+          alert("Select a strategy");
+        } else {
+          window.location.href = window.location.origin + `?strategy=${output}`;
+        }
+      }
+      function get_all_data() {
+        selectElement1 = document.querySelector("#datepicker").value;
+        selectElement2 = document.querySelector("#select1");
+        output = selectElement2.options[selectElement2.selectedIndex].value;
+        let url = new URL(window.location.origin);
+        let params = url.searchParams;
+        console.log(selectElement1, output);
+        if (selectElement1 === "" && output == "-----") {
+          alert("Select any on filter");
+        } else if (selectElement1 !== "" && output != "-----") {
+          console.log(url);
+          params.set("date", selectElement1);
+          params.set("strategy", output);
+        } else if (selectElement1 !== "") {
+          params.set("date", selectElement1);
+        } else if (output != "-----") {
+          params.set("strategy", output);
+        }
+        url.search = params.toString();
+        console.log(selectElement1);
+        var new_url = url.toString();
+        window.location = new_url;
+        console.log(new_url);
+      }
+
+      window.addEventListener("DOMContentLoaded", (event) => {
+        if (window.location.search !== "") {
+          console.log("hello");
+          document.getElementById(
+            "clear-search"
+          ).innerHTML = `<a href="${window.location.origin}"><button class="btn btn-dark" >clear filter</button></a>`;
+        }
+        var socket = new WebSocket("ws://" + window.location.host);
+
+        if (socket.readyState == WebSocket.OPEN) {
+          socket.onopen();
+        }
+        socket.onopen = function open(e) {
+          console.log(e);
+          var dict_data_from_js = {};
+          dict_data_from_js["name"] = window.location.href;
+          dict_data_from_js["url_param"] = { strategy: {}, date: {} };
+          const queryString = window.location.search;
+
+          const urlParams = new URLSearchParams(queryString);
+          const date_type = urlParams.get("date");
+          const strategy_type = urlParams.get("strategy");
+          if (date_type != "undefined") {
+            dict_data_from_js["url_param"]["date"] = date_type;
+          }
+          0;
+          if (strategy_type != "undefined") {
+            dict_data_from_js["url_param"]["strategy"] = strategy_type;
+          }
+
+          socket.send(JSON.stringify(dict_data_from_js));
+        };
+        socket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          console.log(data);
+
+          var text = "";
+          var dropdown = "";
+          if ( typeof data["strategy"] != "undefined" ) {
+            for (let i = 0, len = data["strategy"].length; i < len; i++) {
+              console.log(data["strategy"][i]["name"]);
+              dropdown += `<option value="${data["strategy"][i]["name"]}">${data["strategy"][i]["name"]}</option>`;
+            }
+          }
+          const option = document.getElementById("select1");
+          option.innerHTML += dropdown;
+          for (let i = 0, len = data["data"].length; i < len; i++) {
+            text += `
           <tr>
             <th class="table-active">${data["data"][i]["strategy"]["name"]}
             </th>`;
@@ -68,67 +215,77 @@
               text += `
               <th class="table-active">${data["data"][i]["buy"]["time_frame"]}</th>
               <th class="table-active">${data["data"][i]["buy"]["stockname"]}</th>
-              `
-            }
-            else if (data["data"][i]["sell"] !== null) {
+              `;
+            } else if (data["data"][i]["sell"] !== null) {
               text += `
             <th class="table-active">${data["data"][i]["sell"]["time_frame"]}</th>
             <th class="table-active">${data["data"][i]["sell"]["stockname"]}</th>
-              `
+              `;
             }
 
-          if (data["data"][i]["buy"] !== null) {
-            text += `
-          <th class="table-warning">${data["data"][i]["buy"]["time"].split('.')[0]}</th>
+            if (data["data"][i]["buy"] !== null) {
+              text += `
+          <th class="table-warning">${
+            data["data"][i]["buy"]["time"].split(".")[0]
+          }</th>
           <th class="table-warning">${data["data"][i]["buy"]["date"]}</th>
-          <th class="table-warning">${Number(data["data"][i]["buy"]["quanty"]).toFixed(2)}</th>
-          <th class="table-warning">${Number(data["data"][i]["buy"]["price"]).toFixed(2)}</th>
-          <th class="table-warning">${Number(data["data"][i]["buy"]["brk"]).toFixed(2)}</th>
-          <th class="table-warning">${Number(data["data"][i]["buy"]["nrate"]).toFixed(2)}</th>
-          <th class="table-warning">${Number(data["data"][i]["buy"]["amt"]).toFixed(2)}</th>`;
-          } else {
-            text += `
-          <th class="table-warning"></th>
-          <th class="table-warning"></th>
+          <th class="table-warning">${Number(
+            data["data"][i]["buy"]["quanty"]
+          ).toFixed(2)}</th>
+          <th class="table-warning">${Number(
+            data["data"][i]["buy"]["price"]
+          ).toFixed(2)}</th>
+          <th class="table-warning">${Number(
+            data["data"][i]["buy"]["amt"]
+          ).toFixed(2)}</th>`;
+            } else {
+              text += `
           <th class="table-warning"></th>
           <th class="table-warning"></th>
           <th class="table-warning"></th>
           <th class="table-warning"></th>
           <th class="table-warning"></th>`;
-          }
-          if (data["data"][i]["sell"] !== null) {
-            text += `
-          <th class="table-danger">${data["data"][i]["sell"]["time"].split('.')[0]}</th>
+            }
+            if (data["data"][i]["sell"] !== null) {
+              text += `
+          <th class="table-danger">${
+            data["data"][i]["sell"]["time"].split(".")[0]
+          }</th>
           <th class="table-danger">${data["data"][i]["sell"]["date"]}</th>
-          <th class="table-danger">${Number(data["data"][i]["sell"]["quanty"]).toFixed(2)}</th>
-          <th class="table-danger">${Number(data["data"][i]["sell"]["price"]).toFixed(2)}</th>
-          <th class="table-danger">${Number(data["data"][i]["sell"]["brk"]).toFixed(2)}</th>
-          <th class="table-danger">${Number(data["data"][i]["sell"]["nrate"]).toFixed(2)}</th>
-          <th class="table-danger">${Number(data["data"][i]["sell"]["amt"]).toFixed(2)}</th>`;
-          } else {
-            text += `
-          <th class="table-danger"></th>
-          <th class="table-danger"></th>
+          <th class="table-danger">${Number(
+            data["data"][i]["sell"]["quanty"]
+          ).toFixed(2)}</th>
+          <th class="table-danger">${Number(
+            data["data"][i]["sell"]["price"]
+          ).toFixed(2)}</th>
+          <th class="table-danger">${Number(
+            data["data"][i]["sell"]["amt"]
+          ).toFixed(2)}</th>`;
+            } else {
+              text += `
           <th class="table-danger"></th>
           <th class="table-danger"></th>
           <th class="table-danger"></th>
           <th class="table-danger"></th>
           <th class="table-danger"></th>`;
-          }
-          if (data["data"][i]["total"] !== null) {
-            text += `<th class="table-success">${data["data"][i]["total"]}</th>
+            }
+            if (data["data"][i]["total"] !== null) {
+              text += `<th class="table-success">${Number(
+                data["data"][i]["total"]
+              ).toFixed(3)}</th>
             </tr>`;
-          } else {
-            text += `<th class="table-success"></th>
+            } else {
+              text += `<th class="table-success"></th>
             </tr>`;
+            }
           }
-        }
-        const elements = document.getElementById("data");
-        elements.innerHTML = text;
-      };
-      socket.onclose = function (e) {
-        console.log(e, "close event ")
-      }
-    });
-  </script>
+          const elements = document.getElementById("data");
+          elements.innerHTML = text;
+        };
+        socket.onclose = function (e) {
+          console.log(e, "close event ");
+        };
+      });
+    </script>
+  </body>
 </html>

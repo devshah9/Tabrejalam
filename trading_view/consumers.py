@@ -2,6 +2,7 @@ import json
 from asgiref.sync import async_to_sync
 
 from django.core import serializers
+from django.db.models.fields import PositiveIntegerRelDbTypeMixin
 from .models import *
 import decimal 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -49,7 +50,6 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super(CustomJSONEncoder, self).default(o)
 class ChatConsumer(JsonWebsocketConsumer):
     model_instance = StockInfo.objects.all()
-    serializer = Stockinfoserializer(model_instance, many=True)
        
 
     def connect(self):
@@ -58,22 +58,46 @@ class ChatConsumer(JsonWebsocketConsumer):
             self.channel_name
         )
         self.accept()
-        self.send_json({
-            'type': 'events.alarm',
-            'data': self.serializer.data
-    })
 
     def disconnect(self, close_code):
         pass
 
     def receive(self, text_data):
-        print(text_data)
-        self.send_json({"type": "test"})     
-       
+        receive_data = json.loads(text_data)
+        strategy_instance = Strategy.objects.all()
+        model_instance = StockInfo.objects.all()
+        if receive_data["url_param"] != {'strategy': {}, 'date': {}}:
+            print(receive_data["url_param"])
+            if receive_data["url_param"]["strategy"]:
+                model_instance = model_instance.filter(strategy__name =receive_data["url_param"]["strategy"] )
+                print(receive_data["url_param"]["strategy"])
+            if receive_data["url_param"]["date"]:
+                date_range = receive_data["url_param"]["date"].split('-')
+                date0 = datetime.strptime(date_range[0], "%m/%d/%Y")
+                date1 = datetime.strptime(date_range[1], "%m/%d/%Y")
+                date0 =date0.strftime("%Y-%m-%d")
+                date1 =date1.strftime("%Y-%m-%d")
+                model_instance = model_instance.filter(buy__date__range =[date0, date1])
+                print(model_instance)
+        else:
+            model_instance = StockInfo.objects.all()
+        serializer = Stockinfoserializer(model_instance, many=True)
+        strategyserializers = Strategyserializers(strategy_instance, many=True) 
+        self.send_json({
+            'type': 'events.alarm',
+            'data': serializer.data,
+            'strategy': strategyserializers.data, 
+    })
     def events_alarm(self, event):
+        # print(event["content"])
+        # receive_data = json.loads(text_data)
+        model_instance = StockInfo.objects.all()
+        serializer = Stockinfoserializer(model_instance, many=True)
+        
         self.send_json(
             {
                 'type': 'events.alarm',
-                'data': event['content']
+                'data': serializer.data
             }
         )
+

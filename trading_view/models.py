@@ -27,9 +27,8 @@ class StockInfo(models.Model):
     sell        = models.OneToOneField(Stock_Data, on_delete=models.CASCADE, null=True, blank=True, related_name="stock_sell_info")
     total       = models.FloatField(null=True, blank=True)
 
-    def update(self, *args, **kwargs):
-        if self.buy != None and self.sell != None:
-            print('this is from save method ')
-
-
-
+    def save(self, *args, **kwargs):
+        if self.buy != None and self.sell != None and self.total == None:
+            self.total = (self.buy.amt + self.sell.amt) * -1
+            print('this is from save method ', self.buy.amt, self.sell.amt)
+        super(StockInfo, self).save(*args, **kwargs)

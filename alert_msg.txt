@@ -26,3 +26,33 @@
     }
 }
 {"strategy_name": "MACD", "timeframe": {{interval}},"passphrase": "somelongstring123","time":"{{timenow}}","exchange":"{{exchange}}","ticker":"{{ticker}}","bar":{"time":"{{time}}","open":{{open}},"high":{{high}},"low":{{low}},"close":{{close}},"volume":{{volume}}},"strategy":{"position_size":{{strategy.position_size}},"order_action":"{{strategy.order.action}}","order_contracts":{{strategy.order.contracts}},"order_price":{{strategy.order.price}},"order_id":"{{strategy.order.id}}","market_position":"{{strategy.market_position}}","market_position_size":{{strategy.market_position_size}},"prev_market_position":"{{strategy.prev_market_position}}","prev_market_position_size":{{strategy.prev_market_position_size}}}}
+
+
+
+{
+    "strategy_name": "MACD", 
+    "timeframe": 1,
+    "passphrase": "somelongstring123",
+    "time":"2022-01-19T08:54:00Z",
+    "exchange":"NSE",
+    "ticker":"RELIANCE",
+    "bar":{
+        "time":"2022-01-19T08:54:00Z",
+        "open":2516.9,
+        "high":2516.9,
+        "low":2516.9,
+        "close":2516.9,
+        "volume":57
+    },
+    "strategy":{
+        "position_size":1,
+        "order_action":"buy",
+        "order_contracts":1,
+        "order_price":2517,
+        "order_id":"SLPLong",
+        "market_position":"long",
+        "market_position_size":1,
+        "prev_market_position":"flat",
+        "prev_market_position_size":0
+    }
+}
