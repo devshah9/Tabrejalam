@@ -1,18 +1,31 @@
-
 import yaml
+import json
+from datetime import datetime
+from urllib import request
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+
+from django.contrib.auth.models import Group, User
+from django.db.models import Count, Q
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework import permissions, viewsets
+
+from .models import *
+from .serializers import *
 
 from trading_view.consumers import Stockinfoserializer
 
-from .models import *
 # Create your views here.
 def home(request):
     stockdata = StockInfo.objects.all()
     return render(request, 'trading_view/index.html', {"StockInfos": stockdata})
 
-from django.views.decorators.csrf import csrf_exempt
+
+
 @csrf_exempt
 def data(request, *args, **kwargs):
     if request.method == "POST":
@@ -171,6 +184,68 @@ def data(request, *args, **kwargs):
         return render(request, 'trading_view/main.html', {"StockInfos": StockInfo.objects.all()})
     else:
         return render(request, 'trading_view/main.html', {"StockInfos": StockInfo.objects.all()})
+
+
+
+
+
+class StrategyViewSet(viewsets.ModelViewSet):
+    queryset = Strategy.objects.all()
+    serializer_class = Strategyserializers
+
+
+class TradeAllViewSet(viewsets.ModelViewSet):
+    queryset = StockInfo.objects.all()
+    serializer_class = Stockinfoserializer
+
+class TradeByViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        queryset = StockInfo.objects.all()
+
+        if self.request.query_params.get('toDate'):
+            date = self.request.query_params.get('toDate') 
+            splited_date = str(date).split("-") 
+            year, month, date = int(splited_date[0]), int(splited_date[1]), int(splited_date[2])
+            queryset = queryset.filter(
+                Q(buy__date__lte = datetime(year, month, date)) |
+                Q(sell__date__lte = datetime(year, month, date)))
+        if self.request.query_params.get('fromDate'):
+            date = self.request.query_params.get('fromDate') 
+            splited_date = str(date).split("-") 
+            year, month, date = int(splited_date[0]), int(splited_date[1]), int(splited_date[2])
+            queryset = queryset.filter(
+                Q(buy__date__gte = datetime(year, month, date)) |
+                Q(sell__date__gte = datetime(year, month, date)))
+        if self.request.query_params.get('strategyName'):
+            strategy_name = self.request.query_params.get('strategyName')
+            queryset = queryset.filter(strategy__name = strategy_name)
+        if self.request.query_params.get('stockName'):
+            stockname = self.request.query_params.get('stockName')
+            queryset = queryset.filter(buy__name = stockname)
+        return queryset
+    serializer_class = Stockinfoserializer
+
+
+def StockAllViewSet(request, *args, **kwargs):
+    dic = {}
+    a = StockInfo.objects.values('sell__stockname').distinct().annotate(Count('sell__stockname'))
+    for i in a:
+        if i['sell__stockname']:
+            print(235, i)
+            dic[i['sell__stockname']] = i['sell__stockname__count']
+    a = StockInfo.objects.values('buy__stockname').distinct().annotate(Count('buy__stockname'))
+    for i in a:
+        if i["buy__stockname"]:
+            print(240, i)
+            if i["buy__stockname"] in dic:
+                if dic[i['buy__stockname']] < i['buy__stockname__count']:
+                    dic[i['buy__stockname']] = i['buy__stockname__count']
+            else:
+                dic[i['buy__stockname']] = i['buy__stockname__count']
+
+    json_data = json.dumps(dic)
+    
+    return HttpResponse(json_data, content_type='application/json')
 
 
 

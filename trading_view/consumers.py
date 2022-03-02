@@ -11,33 +11,7 @@ from channels.generic.websocket import WebsocketConsumer, JsonWebsocketConsumer
 # from channels.backends.base import WebsocketConsumer #WebsocketConsumer
 from datetime import datetime, date, time
 from django.http import JsonResponse
-from rest_framework import serializers
-
-class Buyserializers(serializers.ModelSerializer):
-    class Meta:
-        model = Stock_Data
-        fields = ('__all__')
-
-class Sellserializers(serializers.ModelSerializer):
-    class Meta:
-        model = Stock_Data
-        fields = ('__all__')
-    
-class Strategyserializers(serializers.ModelSerializer):
-    class Meta:
-        model = Strategy
-        fields = ('__all__')
-
-
-class Stockinfoserializer(serializers.ModelSerializer):
-    strategy = Strategyserializers(read_only = True)
-    buy = Buyserializers(read_only = True)
-    sell = Sellserializers(read_only = True)
-    class Meta:
-      model = StockInfo
-      fields = ('__all__')
-    
-    
+from .serializers import *    
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, o):

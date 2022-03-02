@@ -5,74 +5,292 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-  </head>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-    crossorigin="anonymous"
-  />
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
-  />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+    />
 
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      table th {
+        font-size: 13px !important;
+        text-align: center;
+        padding: 5px !important;
+      }
+      table td {
+        font-size: 13px !important;
+        text-align: center;
+        padding: 5px !important;
+      }
+      table .withSelect {
+        padding: 0 !important;
+      }
+      .config {
+        margin-top: 100px;
+        display: grid;
+        grid-template-columns: 9fr 9fr 4fr 4fr;
+      }
+      .inputGroup {
+        margin-right: 10px;
+      }
+      .inputGroup label {
+        display: block;
+      }
+
+      .inputGroup input {
+        width: 200px;
+        height: 30px;
+        font-size: 0.8em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: block;
+        margin-right: 3px;
+      }
+
+      .inputGroup select {
+        width: 200px;
+        height: 30px;
+        font-size: 0.8em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: block;
+        margin-right: 3px;
+      }
+
+      .inputThing {
+        display: flex;
+      }
+
+      .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+
+      .pagination-container p {
+        font-size: 1em;
+      }
+      .activePageNumber {
+        background: rgb(14, 12, 12) !important;
+        color: white !important;
+      }
+      .charts {
+        width: 90%;
+        margin: 70px 0;
+      }
+
+      .charts ul {
+        margin-bottom: 10px;
+      }
+
+      .charts canvas {
+        width: 100%;
+        height: 50% !important;
+      }
+
+      .charts #stockPieChart {
+        height: 50% !important;
+      }
+    </style>
+  </head>
   <body>
     <div class="container">
-      <div class="mt-5 input-group">
-        <div class="d-flex" style="width: 100%; height: 30px">
-          <label for="select1" style="width: 15%">Select strategy : </label>
+      <div class="config">
+        <div class="inputGroup">
+          <label for="select1">Select strategy : </label>
+          <div class="inputThing">
+            <select
+              class="form-select"
+              aria-label="Default select example"
+              id="select1"
+            >
+              <option disabled selected>-----</option>
+            </select>
+            <button class="btn btn-dark btn-sm" onclick="getOption()">
+              Check
+            </button>
+          </div>
+        </div>
+        <div class="inputGroup">
+          <label for="datepicker">Select Date-Range : </label>
+          <div class="inputThing">
+            <input type="text" id="datepicker" name="datefilter" value="" />
 
-          <select
-            class="form-select w-25"
-            aria-label="Default select example"
-            id="select1"
-          >
-            <option disabled selected>-----</option>
-          </select>
-          <button class="btn btn-primary btn-sm" onclick="getOption()">
-            Check
+            <button class="btn btn-dark btn-sm" onclick="getDate()">
+              Check
+            </button>
+          </div>
+        </div>
+        <div class="d-flex align-items-end">
+          <button class="btn btn-dark btn-sm" onclick="get_all_data()">
+            Check Both Filter
           </button>
         </div>
+        <div
+          id="clear-search"
+          class="d-flex align-items-end justify-content-end"
+        ></div>
       </div>
-      <div class="mt-1 input-group">
-        <label for="datepicker" style="width: 15%">Select Date-Range : </label>
-        <input type="text" id="datepicker" name="datefilter" value="" />
-
-        <button class="btn btn-primary btn-sm" onclick="getDate()">
-          Check
-        </button>
-      </div>
-      <div>
-        <button class="btn btn-primary btn-sm" onclick="get_all_data()">
-          check1
-        </button>
-      </div>
-      <div id="clear-search"></div>
-      <div class="mt-5">
+      <div class="mt-1">
         <table class="table table-responsive table-bordered table-sm">
-          <thead>
+          <thead class="table-dark">
             <tr>
-              <th class="table-active">Strategy</th>
-              <th class="table-active">FRAME TIME</th>
-              <th class="table-active">SYMBOL NAME</th>
-              <th class="table-warning">Buy Time</th>
-              <th class="table-warning">DATE</th>
-              <th class="table-warning">QTY</th>
-              <th class="table-warning">Price</th>
-              <th class="table-warning">AMT</th>
-              <th class="table-danger">Buy Time</th>
-              <th class="table-danger">DATE</th>
-              <th class="table-danger">QTY</th>
-              <th class="table-danger">Price</th>
-              <th class="table-danger">AMT</th>
-              <th class="table-success">Total</th>
+              <th>Strategy</th>
+              <th>FRAME TIME</th>
+              <th class="withSelect">
+                <select id="stockSelect">
+                  <option value="all" selected>All</option>
+                </select>
+              </th>
+              <th>Buy Time</th>
+              <th>DATE</th>
+              <th>QTY</th>
+              <th>Price</th>
+              <th>AMT</th>
+              <th>Sell Time</th>
+              <th>DATE</th>
+              <th>QTY</th>
+              <th>Price</th>
+              <th>AMT</th>
+              <th>Total</th>
+              <th>Delete</th>
             </tr>
           </thead>
 
           <tbody id="data"></tbody>
         </table>
+
+        <div class="pagination-container">
+          <p class="message pt-2"></p>
+          <ul class="pagination">
+            <!-- <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> First </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Prev </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 1 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 2 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 3 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 4 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 5 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Next </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Last </a>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+      <div class="charts">
+        <h4>Cumulative Profit</h4>
+        <ul class="nav nav-tabs" id="profitChartControl">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Hourly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Daily</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Weekly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Monthly</a>
+          </li>
+        </ul>
+        <canvas id="hourlyProfitChart"></canvas>
+      </div>
+      <div class="charts">
+        <h4>Drawdown</h4>
+
+        <ul class="nav nav-tabs" id="drawdownChartControl">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Hourly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Daily</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Weekly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Monthly</a>
+          </li>
+        </ul>
+        <canvas id="drawdownChart"></canvas>
+      </div>
+      <div class="charts">
+        <h4>Assets Traded</h4>
+        <canvas id="stockPieChart"></canvas>
+      </div>
+
+      <div class="charts">
+        <h4>Percentage Return</h4>
+
+        <ul class="nav nav-tabs" id="percentReturnChartControl">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Hourly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Daily</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Weekly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Monthly</a>
+          </li>
+        </ul>
+        <canvas id="percentReturnChart"></canvas>
+      </div>
+
+      <div class="charts">
+        <h4 class="   ">Winners v/s Loosers</h4>
+
+        <ul class="nav nav-tabs" id="winLossChartControl">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Hourly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Daily</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Weekly</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">Monthly</a>
+          </li>
+        </ul>
+        <canvas id="winLossChart"></canvas>
       </div>
     </div>
     <script
@@ -128,7 +346,6 @@
       function getOption() {
         selectElement = document.querySelector("#select1");
         output = selectElement.options[selectElement.selectedIndex].value;
-        /*console.log(window.location)*/
         if (output == "-----") {
           alert("Select a strategy");
         } else {
@@ -141,7 +358,6 @@
         output = selectElement2.options[selectElement2.selectedIndex].value;
         let url = new URL(window.location.origin);
         let params = url.searchParams;
-        console.log(selectElement1, output);
         if (selectElement1 === "" && output == "-----") {
           alert("Select any on filter");
         } else if (selectElement1 !== "" && output != "-----") {
@@ -154,7 +370,6 @@
           params.set("strategy", output);
         }
         url.search = params.toString();
-        console.log(selectElement1);
         var new_url = url.toString();
         window.location = new_url;
         console.log(new_url);
@@ -165,7 +380,7 @@
           console.log("hello");
           document.getElementById(
             "clear-search"
-          ).innerHTML = `<a href="${window.location.origin}"><button class="btn btn-dark" >clear filter</button></a>`;
+          ).innerHTML = `<a href="${window.location.origin}"><button class="btn btn-dark btn-sm  " >Clear filters</button></a>`;
         }
         var socket = new WebSocket("ws://" + window.location.host);
 
@@ -182,110 +397,1249 @@
           const urlParams = new URLSearchParams(queryString);
           const date_type = urlParams.get("date");
           const strategy_type = urlParams.get("strategy");
+          let selectElemento = document.getElementById("select1");
+          //convert from utf to string
+
           if (date_type != "undefined") {
             dict_data_from_js["url_param"]["date"] = date_type;
+            document.getElementById("datepicker").value = date_type;
           }
           0;
-          if (strategy_type != "undefined") {
+          if (strategy_type != "undefined" && strategy_type != null) {
+            let selected_strategy = strategy_type.split("%20").join(" ");
+            selectElemento.options[selectElemento.selectedIndex].innerText =
+              selected_strategy;
             dict_data_from_js["url_param"]["strategy"] = strategy_type;
           }
 
           socket.send(JSON.stringify(dict_data_from_js));
         };
+
+        let actual_data;
+        let chartState = {
+          isChartsPlotted: false,
+          charts: {},
+        };
         socket.onmessage = function (e) {
           const data = JSON.parse(e.data);
           console.log(data);
+          let strategies = data["strategy"];
+          actual_data = data["data"];
+          handleStockSelect(strategies, actual_data, chartState);
+        };
 
+        function handleStockSelect(strategies, actual_data, chartState) {
+          let stockSelect = document.querySelector("#stockSelect");
+
+          let stockCount = {};
+
+          actual_data.forEach((row) => {
+            if (row["total"] != null) {
+              if (stockCount[row["buy"]["stockname"]] == null) {
+                stockCount[row["buy"]["stockname"]] = 1;
+              } else {
+                stockCount[row["buy"]["stockname"]] += 1;
+              }
+            }
+          });
+
+          let stockNames = Object.keys(stockCount);
+
+          stockNames.forEach((stockName) => {
+            let option = document.createElement("option");
+            option.value = stockName;
+            option.innerText = stockName;
+            stockSelect.appendChild(option);
+          });
+          handlePagination(strategies, actual_data);
+
+          let winLossChart,
+            percentReturnChart,
+            profitChart,
+            drawdownChart,
+            stockPieChart;
+
+          if (chartState.isChartsPlotted) {
+            winLossChart = chartState.charts["winLossChart"];
+            percentReturnChart = chartState.charts["percentReturnChart"];
+            profitChart = chartState.charts["profitChart"];
+            drawdownChart = chartState.charts["drawdownChart"];
+            stockPieChart = chartState.charts["stockPieChart"];
+            updateAllCharts(
+              actual_data,
+              winLossChart,
+              percentReturnChart,
+              profitChart,
+              drawdownChart,
+              stockPieChart
+            );
+          } else {
+            chartState.isChartsPlotted = true;
+
+            // let {winLossChart}
+
+            // chartState.charts["winLossChart"] =
+            //   renderCharts(actual_data).winLossChart;
+            // chartState.charts["percentReturnChart"] =
+            //   renderCharts(actual_data).percentReturnChart;
+            // chartState.charts["profitChart"] =
+            //   renderCharts(actual_data).profitChart;
+            // chartState.charts["drawdownChart"] =
+            //   renderCharts(actual_data).drawdownChart;
+            // chartState.charts["stockPieChart"] =
+            //   renderCharts(actual_data).stockPieChart;
+
+            chartState.charts = renderCharts(actual_data);
+
+            winLossChart = chartState.charts["winLossChart"];
+            percentReturnChart = chartState.charts["percentReturnChart"];
+            profitChart = chartState.charts["profitChart"];
+            drawdownChart = chartState.charts["drawdownChart"];
+            stockPieChart = chartState.charts["stockPieChart"];
+          }
+
+          //addd event listner on stock select
+          stockSelect.addEventListener("change", (e) => {
+            let selectedStock = e.target.value;
+            if (e.target.value === "all") {
+              handlePagination(strategies, actual_data);
+              updateAllCharts(
+                actual_data,
+                winLossChart,
+                percentReturnChart,
+                profitChart,
+                drawdownChart,
+                stockPieChart
+              );
+            } else {
+              let filteredData = actual_data
+                .filter((row) => row["buy"] != null)
+                .filter((row) => {
+                  return row["buy"]["stockname"] == selectedStock;
+                });
+              handlePagination(strategies, filteredData);
+              updateAllCharts(
+                filteredData,
+                winLossChart,
+                percentReturnChart,
+                profitChart,
+                drawdownChart,
+                stockPieChart
+              );
+            }
+          });
+        }
+
+        function updateAllCharts(
+          data,
+          winLossChart,
+          percentReturnChart,
+          profitChart,
+          drawdownChart,
+          stockPieChart
+        ) {
+          updateWinLossChart("hourly", winLossChart, data);
+          updatePercentReturnChart("hourly", percentReturnChart, data);
+          updateProfitChart("hourly", profitChart, data);
+          updateDrawdownChart("hourly", drawdownChart, data);
+          updateStockPieChart(stockPieChart, data);
+
+          handleUpdateOfProfitChart(profitChart, data);
+          handleUpdateOfDrawdownChart(drawdownChart, data);
+          // handleUpdateOfStockPieChart(stockPieChart, data)
+          handleUpdateOfPercentReturnChart(percentReturnChart, data);
+          handleUpdateOfWinLossChart(winLossChart, data);
+        }
+
+        function renderCharts(whole_data, action = "render") {
+          let dataForProfitChart_ = dataForProfitChart(whole_data, "hourly");
+          let dataForDrawdownChart_ = dataForDrawdownChart(
+            whole_data,
+            "hourly"
+          );
+
+          let dataForPercentReturn_ = dataForPercentReturnChart(
+            whole_data,
+            "hourly"
+          );
+          let dataForStockPieChart_ = dataForStockPieChart(whole_data);
+          let dataForWinLossChart_ = dataForWinLossChart(whole_data, "hourly");
+          let winLossChart,
+            percentReturnChart,
+            profitChart,
+            drawdownChart,
+            stockPieChart;
+          winLossChart = renderWinLossChart(dataForWinLossChart_);
+
+          percentReturnChart = renderPercentReturnChart(dataForPercentReturn_);
+          profitChart = renderProfitChart(dataForProfitChart_);
+          drawdownChart = renderDrawdownChart(dataForDrawdownChart_);
+          stockPieChart = renderStockPieChart(dataForStockPieChart_);
+
+          handleUpdateOfProfitChart(profitChart, whole_data);
+          handleUpdateOfDrawdownChart(drawdownChart, whole_data);
+          // handleUpdateOfStockPieChart(stockPieChart, whole_data)
+          handleUpdateOfPercentReturnChart(percentReturnChart, whole_data);
+          handleUpdateOfWinLossChart(winLossChart, whole_data);
+
+          return {
+            winLossChart,
+            percentReturnChart,
+            profitChart,
+            drawdownChart,
+            stockPieChart,
+          };
+        }
+
+        function showPaginationAccordingToTotalPages(totalPages) {
+          let pagination = document.querySelector(".pagination");
+          let pageItems = Array.from(pagination.querySelectorAll(".page-link"));
+          pageItems.forEach((item) => {
+            item.style.display = "block";
+          });
+          if (totalPages === 1) {
+            pageItems[3].style.display = "none";
+            pageItems[4].style.display = "none";
+            pageItems[5].style.display = "none";
+            pageItems[6].style.display = "none";
+          }
+          if (totalPages === 2) {
+            pageItems[4].style.display = "none";
+            pageItems[5].style.display = "none";
+            pageItems[6].style.display = "none";
+          }
+          if (totalPages === 3) {
+            pageItems[5].style.display = "none";
+            pageItems[6].style.display = "none";
+          }
+
+          if (totalPages === 4) {
+            pageItems[6].style.display = "none";
+          }
+
+          if (totalPages <= 5) {
+            pageItems[0].style.display = "none";
+            pageItems[1].style.display = "none";
+            pageItems[7].style.display = "none";
+            pageItems[8].style.display = "none";
+          }
+        }
+
+        function createNewPaginationElement() {
+          let pagination = document.querySelector(".pagination");
+          let pageItemsHTML = `  <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> First </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Prev </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 1 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 2 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 3 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 4 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> 5 </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Next </a>
+            </li>
+            <li class="page-item">
+              <a href="#" class="page-link text-dark" data-page="1"> Last </a>
+            </li>`;
+          pagination.innerHTML = pageItemsHTML;
+        }
+
+        function handlePagination(strategies, actual_data) {
+          createNewPaginationElement();
+          let pagination = document.querySelector(".pagination");
+          let pageItems = Array.from(pagination.querySelectorAll(".page-link"));
+
+          let pageNumber = 1;
+          let pageSize = 10;
+          let totalPages = Math.ceil(actual_data.length / pageSize);
+
+          showPaginationAccordingToTotalPages(totalPages);
+
+          let startIndex = (pageNumber - 1) * pageSize;
+          let endIndex = Math.min(
+            startIndex + pageSize - 1,
+            actual_data.length - 1
+          );
+          let currentPage = actual_data.slice(startIndex, endIndex + 1);
+          writeMessageForPagination(
+            pageNumber,
+            totalPages,
+            startIndex,
+            endIndex,
+            actual_data.length
+          );
+          renderTheTableWithData(strategies, currentPage);
+          makeActivePageNumberHighlight(pageNumber, pageItems);
+
+          pageItems.forEach((item) => {
+            item.addEventListener("click", (e) => {
+              e.preventDefault();
+              let innerTextOfLink = e.target.innerText;
+              if (innerTextOfLink === "First") {
+                pageNumber = 1;
+              } else if (innerTextOfLink === "Last") {
+                pageNumber = totalPages;
+              } else if (innerTextOfLink === "Next") {
+                pageNumber = changePageNumber(pageNumber + 1, totalPages);
+              } else if (innerTextOfLink === "Prev") {
+                pageNumber = changePageNumber(pageNumber - 1, totalPages);
+              } else {
+                pageNumber = changePageNumber(
+                  parseInt(innerTextOfLink),
+                  totalPages
+                );
+              }
+              changeTextOnPageItemLink(pageNumber, pageItems, totalPages);
+              makeActivePageNumberHighlight(pageNumber, pageItems);
+              startIndex = (pageNumber - 1) * pageSize;
+              endIndex = Math.min(
+                startIndex + pageSize - 1,
+                actual_data.length - 1
+              );
+              currentPage = actual_data.slice(startIndex, endIndex + 1);
+              writeMessageForPagination(
+                pageNumber,
+                totalPages,
+                startIndex,
+                endIndex,
+                actual_data.length
+              );
+              renderTheTableWithData(strategies, currentPage);
+            });
+          });
+        }
+
+        function makeActivePageNumberHighlight(currentPageNumber, pageItems) {
+          pageItems.forEach((item) => {
+            item.classList.remove("activePageNumber");
+            if (item.innerText == String(currentPageNumber)) {
+              item.classList.add("activePageNumber");
+            }
+          });
+        }
+
+        function writeMessageForPagination(
+          pageNumber,
+          totalPages,
+          startIndex,
+          endIndex,
+          actual_data_length
+        ) {
+          document.querySelector(".pagination-container .message ").innerHTML =
+            totalPages === 0
+              ? "no entries with this filter"
+              : "Showing " +
+                (startIndex + 1) +
+                " to " +
+                (endIndex + 1) +
+                " of " +
+                actual_data_length +
+                " entries" +
+                " and" +
+                " page " +
+                pageNumber +
+                " of " +
+                totalPages;
+        }
+
+        function changeTextOnPageItemLink(
+          currentPageNumber,
+          pageItems,
+          totalPages
+        ) {
+          if (currentPageNumber + 4 === totalPages) {
+            return;
+          }
+
+          if (currentPageNumber <= 5) {
+            pageItems[2].innerText = 1;
+            pageItems[3].innerText = 2;
+            pageItems[4].innerText = 3;
+            pageItems[5].innerText = 4;
+            pageItems[6].innerText = 5;
+            return;
+          }
+
+          if (currentPageNumber >= totalPages - 4) {
+            pageItems[2].innerText = totalPages - 4;
+            pageItems[3].innerText = totalPages - 3;
+            pageItems[4].innerText = totalPages - 2;
+            pageItems[5].innerText = totalPages - 1;
+            pageItems[6].innerText = totalPages - 0;
+            return;
+          }
+
+          pageItems.slice(2, pageItems.length - 2).forEach((item, i) => {
+            // if (currentPageNumber + i <= totalPages) {
+            item.innerText = currentPageNumber + (i - 2);
+            // }
+          });
+        }
+
+        function changePageNumber(to, totalPages) {
+          if (to > totalPages) {
+            to = totalPages;
+          } else if (to < 1) {
+            to = 1;
+          }
+
+          return to;
+        }
+
+        function renderTheTableWithData(strategies, data) {
           var text = "";
           var dropdown = "";
-          if ( typeof data["strategy"] != "undefined" ) {
-            for (let i = 0, len = data["strategy"].length; i < len; i++) {
-              console.log(data["strategy"][i]["name"]);
-              dropdown += `<option value="${data["strategy"][i]["name"]}">${data["strategy"][i]["name"]}</option>`;
+          if (strategies) {
+            for (let i = 0, len = strategies.length; i < len; i++) {
+              dropdown += `<option value="${strategies[i]["name"]}">${strategies[i]["name"]}</option>`;
             }
           }
           const option = document.getElementById("select1");
           option.innerHTML += dropdown;
-          for (let i = 0, len = data["data"].length; i < len; i++) {
+          for (let i = 0, len = data.length; i < len; i++) {
             text += `
           <tr>
-            <th class="table-active">${data["data"][i]["strategy"]["name"]}
-            </th>`;
-            if (data["data"][i]["buy"] !== null) {
+            <td>${data[i]["strategy"]["name"]}
+            </td>`;
+            if (data[i]["buy"] !== null) {
               text += `
-              <th class="table-active">${data["data"][i]["buy"]["time_frame"]}</th>
-              <th class="table-active">${data["data"][i]["buy"]["stockname"]}</th>
+              <td>${data[i]["buy"]["time_frame"]}</td>
+              <td>${data[i]["buy"]["stockname"]}</td>
               `;
-            } else if (data["data"][i]["sell"] !== null) {
+            } else if (data[i]["sell"] !== null) {
               text += `
-            <th class="table-active">${data["data"][i]["sell"]["time_frame"]}</th>
-            <th class="table-active">${data["data"][i]["sell"]["stockname"]}</th>
+            <td>${data[i]["sell"]["time_frame"]}</td>
+            <td>${data[i]["sell"]["stockname"]}</td>
               `;
             }
 
-            if (data["data"][i]["buy"] !== null) {
+            if (data[i]["buy"] !== null) {
               text += `
-          <th class="table-warning">${
-            data["data"][i]["buy"]["time"].split(".")[0]
-          }</th>
-          <th class="table-warning">${data["data"][i]["buy"]["date"]}</th>
-          <th class="table-warning">${Number(
-            data["data"][i]["buy"]["quanty"]
-          ).toFixed(2)}</th>
-          <th class="table-warning">${Number(
-            data["data"][i]["buy"]["price"]
-          ).toFixed(2)}</th>
-          <th class="table-warning">${Number(
-            data["data"][i]["buy"]["amt"]
-          ).toFixed(2)}</th>`;
+          <td>${data[i]["buy"]["time"].split(".")[0]}</td>
+          <td>${data[i]["buy"]["date"]}</td>
+          <td>${Number(data[i]["buy"]["quanty"]).toFixed(2)}</td>
+          <td>${Number(data[i]["buy"]["price"]).toFixed(2)}</td>
+           <td>${Number(data[i]["buy"]["amt"]).toFixed(2)}</td>`;
             } else {
               text += `
-          <th class="table-warning"></th>
-          <th class="table-warning"></th>
-          <th class="table-warning"></th>
-          <th class="table-warning"></th>
-          <th class="table-warning"></th>`;
+          <td></td>
+          <td></td>
+           <td></td>
+          <td></td>
+          <td></td>`;
             }
-            if (data["data"][i]["sell"] !== null) {
+            if (data[i]["sell"] !== null) {
               text += `
-          <th class="table-danger">${
-            data["data"][i]["sell"]["time"].split(".")[0]
-          }</th>
-          <th class="table-danger">${data["data"][i]["sell"]["date"]}</th>
-          <th class="table-danger">${Number(
-            data["data"][i]["sell"]["quanty"]
-          ).toFixed(2)}</th>
-          <th class="table-danger">${Number(
-            data["data"][i]["sell"]["price"]
-          ).toFixed(2)}</th>
-          <th class="table-danger">${Number(
-            data["data"][i]["sell"]["amt"]
-          ).toFixed(2)}</th>`;
+          <td>${data[i]["sell"]["time"].split(".")[0]}</td>
+          <td>${data[i]["sell"]["date"]}</td>
+          <td>${Number(data[i]["sell"]["quanty"]).toFixed(2)}</td>
+          <td>${Number(data[i]["sell"]["price"]).toFixed(2)}</td>
+           <td>${Number(data[i]["sell"]["amt"]).toFixed(2)}</td>`;
             } else {
               text += `
-          <th class="table-danger"></th>
-          <th class="table-danger"></th>
-          <th class="table-danger"></th>
-          <th class="table-danger"></th>
-          <th class="table-danger"></th>`;
+          <td></td>
+           <td></td>
+          <td></td>
+          <td></td>
+          <td></td>`;
             }
-            if (data["data"][i]["total"] !== null) {
-              text += `<th class="table-success">${Number(
-                data["data"][i]["total"]
-              ).toFixed(3)}</th>
-            </tr>`;
-            } else {
-              text += `<th class="table-success"></th>
-            </tr>`;
+            if (data[i]["total"] !== null) {
+              text += `<td class=" table-secondary">${Number(
+                -data[i]["total"]
+              ).toFixed(3)}</td>`;
+          } else {
+            text += `<td class="table-secondary"></td>`;
             }
+            text += `<td class="table-secondary">${data[i]["id"]}<span class="material-icons">delete</span></td>
+            </tr>`
           }
           const elements = document.getElementById("data");
           elements.innerHTML = text;
-        };
+        }
+
         socket.onclose = function (e) {
           console.log(e, "close event ");
         };
+
+        function handleUpdateOfProfitChart(profitChart, whole_data) {
+          const profitChartControl = document.querySelectorAll(
+            "#profitChartControl li "
+          );
+          profitChartControl.forEach((item, i) => {
+            item.querySelector("a").addEventListener("click", (e) => {
+              e.preventDefault();
+              let criteria = e.target.innerText.toLowerCase();
+              updateClassToActive(criteria, profitChartControl);
+
+              updateProfitChart(criteria, profitChart, whole_data);
+            });
+          });
+        }
+
+        function handleUpdateOfDrawdownChart(drawdownChart, whole_data) {
+          const drawdownChartControl = document.querySelectorAll(
+            "#drawdownChartControl li "
+          );
+          drawdownChartControl.forEach((item, i) => {
+            item.querySelector("a").addEventListener("click", (e) => {
+              e.preventDefault();
+              let criteria = e.target.innerText.toLowerCase();
+              updateClassToActive(criteria, drawdownChartControl);
+              updateDrawdownChart(criteria, drawdownChart, whole_data);
+            });
+          });
+        }
+
+        function handleUpdateOfPercentReturnChart(
+          percentReturnChart,
+          whole_data
+        ) {
+          const percentReturnChartControl = document.querySelectorAll(
+            "#percentReturnChartControl li "
+          );
+          percentReturnChartControl.forEach((item, i) => {
+            item.querySelector("a").addEventListener("click", (e) => {
+              e.preventDefault();
+              let criteria = e.target.innerText.toLowerCase();
+              updateClassToActive(criteria, percentReturnChartControl);
+
+              updatePercentReturnChart(
+                criteria,
+                percentReturnChart,
+                whole_data
+              );
+            });
+          });
+        }
+
+        function handleUpdateOfWinLossChart(winLossChart, whole_data) {
+          const winLossChartControl = document.querySelectorAll(
+            "#winLossChartControl li "
+          );
+          winLossChartControl.forEach((item, i) => {
+            item.querySelector("a").addEventListener("click", (e) => {
+              e.preventDefault();
+              let criteria = e.target.innerText.toLowerCase();
+              updateClassToActive(criteria, winLossChartControl);
+              updateWinLossChart(criteria, winLossChart, whole_data);
+            });
+          });
+        }
+
+        function updateWinLossChart(criteria, winLossChart, whole_data) {
+          let dataForWinLossChart_ = dataForWinLossChart(whole_data, criteria);
+          winLossChart.data.labels = dataForWinLossChart_.winner.x;
+          winLossChart.data.datasets[0].data = dataForWinLossChart_.winner.y;
+          winLossChart.data.datasets[1].data = dataForWinLossChart_.loser.y;
+
+          winLossChart.update();
+        }
+
+        function updatePercentReturnChart(
+          criteria,
+          percentReturnChart,
+          whole_data
+        ) {
+          let dataForPercentReturnChart_ = dataForPercentReturnChart(
+            whole_data,
+            criteria
+          );
+          percentReturnChart.data.labels = dataForPercentReturnChart_["x"];
+          percentReturnChart.data.datasets[0].backgroundColor =
+            dataForPercentReturnChart_["y"].map((value) => {
+              if (value > 0) {
+                return "rgb(255, 99, 132)";
+              } else {
+                return "rgb(99, 99, 255)";
+              }
+            });
+
+          percentReturnChart.data.datasets[0].data =
+            dataForPercentReturnChart_["y"];
+          percentReturnChart.update();
+        }
+
+        function updateProfitChart(criteria, profitChart, whole_data) {
+          let dataForProfitChart_ = dataForProfitChart(whole_data, criteria);
+          profitChart.data.labels = dataForProfitChart_["x"];
+          profitChart.data.datasets[0].data = dataForProfitChart_["y"];
+          profitChart.update();
+        }
+
+        function updateStockPieChart(stockPieChart, whole_data) {
+          let dataForStockPieChart_ = dataForStockPieChart(whole_data);
+          stockPieChart.data.labels = dataForStockPieChart_["x"];
+          stockPieChart.data.datasets[0].data = dataForStockPieChart_["y"];
+          stockPieChart.update();
+        }
+
+        function updateDrawdownChart(criteria, drawdownChart, whole_data) {
+          let dataForDrawdownChart_ = dataForDrawdownChart(
+            whole_data,
+            criteria
+          );
+          drawdownChart.data.labels = dataForDrawdownChart_["x"];
+          drawdownChart.data.datasets[0].data = dataForDrawdownChart_["y"].map(
+            (item) => {
+              return -item;
+            }
+          );
+          drawdownChart.update();
+        }
+
+        function updateClassToActive(criteria, elements) {
+          elements.forEach((elem) => {
+            elem.querySelector("a").classList.remove("active");
+            if (
+              elem.querySelector("a").innerText.toLowerCase() ===
+              criteria.toLowerCase()
+            ) {
+              elem.querySelector("a").classList.add("active");
+            }
+          });
+        }
+
+        function dataForProfitChart(actual_data, criteria) {
+          let stage_1_data = {};
+
+          actual_data.forEach((row) => {
+            if (row["total"] != null) {
+              let actual_total = -Number(row["total"].toFixed(3));
+              if (criteria === "hourly") {
+                let hour = dateHelpers().getFormatedHour(row["buy"]);
+
+                if (stage_1_data[hour] === undefined) {
+                  stage_1_data[hour] = actual_total;
+                } else {
+                  stage_1_data[hour] += actual_total;
+                }
+              } else if (criteria === "daily") {
+                let day = dateHelpers().getFormatedDate(row["buy"]);
+                if (stage_1_data[day] === undefined) {
+                  stage_1_data[day] = actual_total;
+                } else {
+                  stage_1_data[day] += actual_total;
+                }
+              } else if (criteria === "weekly") {
+                let week = dateHelpers().getFormatedWeek(
+                  row["buy"]["date"],
+                  actual_data[0]["buy"]["date"]
+                );
+                if (stage_1_data[week] === undefined) {
+                  stage_1_data[week] = actual_total;
+                } else {
+                  stage_1_data[week] += actual_total;
+                }
+              } else if (criteria === "monthly") {
+                let month = dateHelpers().getFormatedMonth(row["buy"]);
+                if (stage_1_data[month] === undefined) {
+                  stage_1_data[month] = actual_total;
+                } else {
+                  stage_1_data[month] += actual_total;
+                }
+              }
+            }
+          });
+
+          let stage2_data = {
+            x: Object.keys(stage_1_data),
+            y: Object.values(stage_1_data),
+          };
+          let cumulative_stage2_data = {
+            x: stage2_data.x,
+            y: [],
+          };
+
+          stage2_data.y.forEach((item, i) => {
+            if (i == 0) {
+              cumulative_stage2_data.y.push(stage2_data.y[i]);
+            } else {
+              cumulative_stage2_data.y.push(
+                cumulative_stage2_data.y[i - 1] + stage2_data.y[i]
+              );
+            }
+          });
+
+          return cumulative_stage2_data;
+        }
+
+        function dataForDrawdownChart(actual_data, criteria) {
+          let stage_1_data = {};
+
+          actual_data.forEach((row) => {
+            if (row["total"] != null) {
+              let actual_total = -Number(row["total"]).toFixed(3);
+
+              if (criteria === "hourly") {
+                let hour = dateHelpers().getFormatedHour(row["buy"]);
+                if (stage_1_data[hour] === undefined) {
+                  stage_1_data[hour] = actual_total;
+                } else {
+                  stage_1_data[hour] += actual_total;
+                }
+              } else if (criteria === "daily") {
+                let day = dateHelpers().getFormatedDate(row["buy"]);
+                if (stage_1_data[day] === undefined) {
+                  stage_1_data[day] = actual_total;
+                } else {
+                  stage_1_data[day] += actual_total;
+                }
+              } else if (criteria === "weekly") {
+                let week = dateHelpers().getFormatedWeek(
+                  row["buy"]["date"],
+                  actual_data[0]["buy"]["date"]
+                );
+
+                if (stage_1_data[week] === undefined) {
+                  stage_1_data[week] = actual_total;
+                } else {
+                  stage_1_data[week] += actual_total;
+                }
+              } else if (criteria === "monthly") {
+                let month = dateHelpers().getFormatedMonth(row["buy"]);
+                if (stage_1_data[month] === undefined) {
+                  stage_1_data[month] = actual_total;
+                } else {
+                  stage_1_data[month] += actual_total;
+                }
+              }
+            }
+          });
+
+          let stage2_data = {
+            x: Object.keys(stage_1_data),
+            y: Object.values(stage_1_data),
+          };
+          let cumulative_stage2_data = {
+            x: stage2_data.x,
+            y: [],
+          };
+
+          stage2_data.y.forEach((item, i) => {
+            if (item > 0) {
+              cumulative_stage2_data.y.push(0);
+            } else {
+              if (i == 0) {
+                cumulative_stage2_data.y.push(stage2_data.y[i]);
+              } else {
+                cumulative_stage2_data.y.push(
+                  cumulative_stage2_data.y[i - 1] + stage2_data.y[i]
+                );
+              }
+            }
+          });
+
+          return cumulative_stage2_data;
+        }
+
+        function dataForPercentReturnChart(actual_data, criteria) {
+          let stage_1_data = {};
+
+          actual_data.forEach((row) => {
+            if (row["total"] != null) {
+              let actual_total = -Number(row["total"].toFixed(3));
+              // actual_total = Math.abs(actual_total) > 100 ? 100 : actual_total;
+              if (criteria === "hourly") {
+                let hour = dateHelpers().getFormatedHour(row["buy"]);
+                if (stage_1_data[hour] === undefined) {
+                  stage_1_data[hour] = [
+                    actual_total / (row["buy"]["amt"] + 0.001),
+                  ];
+                } else {
+                  stage_1_data[hour].push(
+                    actual_total / (row["buy"]["amt"] + 0.001)
+                  );
+                }
+              } else if (criteria === "daily") {
+                let day = dateHelpers().getFormatedDate(row["buy"]);
+                if (stage_1_data[day] === undefined) {
+                  stage_1_data[day] = [
+                    actual_total / (row["buy"]["amt"] + 0.001),
+                  ];
+                } else {
+                  stage_1_data[day].push(
+                    actual_total / (row["buy"]["amt"] + 0.001)
+                  );
+                }
+              } else if (criteria === "weekly") {
+                let week = dateHelpers().getFormatedWeek(
+                  row["buy"]["date"],
+                  actual_data[0]["buy"]["date"]
+                );
+
+                if (stage_1_data[week] === undefined) {
+                  stage_1_data[week] = [
+                    actual_total / (row["buy"]["amt"] + 0.001),
+                  ];
+                } else {
+                  stage_1_data[week].push(
+                    actual_total / (row["buy"]["amt"] + 0.001)
+                  );
+                }
+              } else if (criteria === "monthly") {
+                let month = dateHelpers().getFormatedMonth(row["buy"]);
+                if (stage_1_data[month] === undefined) {
+                  stage_1_data[month] = [
+                    actual_total / (row["buy"]["amt"] + 0.001),
+                  ];
+                } else {
+                  stage_1_data[month].push(
+                    actual_total / (row["buy"]["amt"] + 0.001)
+                  );
+                }
+              }
+            }
+          });
+
+          let stage2_data = {
+            x: Object.keys(stage_1_data),
+            y: Object.values(stage_1_data),
+          };
+
+          let cumulative_stage2_data = {
+            x: stage2_data.x,
+            y: [],
+          };
+
+          stage2_data.y.forEach((arr) => {
+            let sum = 0;
+            arr.forEach((item) => {
+              sum += item;
+            });
+            cumulative_stage2_data.y.push((100 * sum) / arr.length);
+          });
+
+          return cumulative_stage2_data;
+        }
+        function dataForStockPieChart(actual_data) {
+          let data_chart = {
+            x: [],
+            y: [],
+          };
+
+          let stockCount = {};
+
+          actual_data.forEach((row) => {
+            if (row["total"] != null) {
+              if (stockCount[row["buy"]["stockname"]] == null) {
+                stockCount[row["buy"]["stockname"]] = 1;
+              } else {
+                stockCount[row["buy"]["stockname"]] += 1;
+              }
+            }
+          });
+
+          for (let key in stockCount) {
+            data_chart.x.push(key);
+            data_chart.y.push(stockCount[key]);
+          }
+
+          return data_chart;
+        }
+        function dataForWinLossChart(actual_data, criteria) {
+          let stage_1_data = {};
+
+          actual_data.forEach((row) => {
+            if (row.total != null) {
+              let actual_total = -Number(row["total"]).toFixed(3);
+
+              if (criteria === "hourly") {
+                let hour = dateHelpers().getFormatedHour(row["buy"]);
+                if (stage_1_data[hour] === undefined) {
+                  if (actual_total > 0) {
+                    stage_1_data[hour] = [1];
+                  } else {
+                    stage_1_data[hour] = [0];
+                  }
+                } else {
+                  if (actual_total > 0) {
+                    stage_1_data[hour].push(1);
+                  } else {
+                    stage_1_data[hour].push(0);
+                  }
+                }
+              }
+
+              if (criteria === "daily") {
+                let day = dateHelpers().getFormatedDate(row["buy"]);
+                if (stage_1_data[day] === undefined) {
+                  if (actual_total > 0) {
+                    stage_1_data[day] = [1];
+                  } else {
+                    stage_1_data[day] = [0];
+                  }
+                } else {
+                  if (actual_total > 0) {
+                    stage_1_data[day].push(1);
+                  } else {
+                    stage_1_data[day].push(0);
+                  }
+                }
+              }
+
+              if (criteria === "weekly") {
+                let week = dateHelpers().getFormatedWeek(
+                  row["buy"]["date"],
+                  actual_data[0]["buy"]["date"]
+                );
+
+                if (stage_1_data[week] === undefined) {
+                  if (actual_total > 0) {
+                    stage_1_data[week] = [1];
+                  } else {
+                    stage_1_data[week] = [0];
+                  }
+                } else {
+                  if (actual_total > 0) {
+                    stage_1_data[week].push(1);
+                  } else {
+                    stage_1_data[week].push(0);
+                  }
+                }
+              }
+
+              if (criteria === "monthly") {
+                let month = dateHelpers().getFormatedMonth(row["buy"]);
+                if (stage_1_data[month] === undefined) {
+                  if (actual_total > 0) {
+                    stage_1_data[month] = [1];
+                  } else {
+                    stage_1_data[month] = [0];
+                  }
+                } else {
+                  if (actual_total > 0) {
+                    stage_1_data[month].push(1);
+                  } else {
+                    stage_1_data[month].push(0);
+                  }
+                }
+              }
+            }
+          });
+
+          let stage2_data = {
+            x: Object.keys(stage_1_data),
+            y: Object.values(stage_1_data),
+          };
+
+          let finalData = {
+            winner: { x: stage2_data.x, y: [] },
+            loser: { x: stage2_data.x, y: [] },
+          };
+
+          stage2_data.y.forEach((arr, i) => {
+            let count0 = 0;
+            let count1 = 0;
+            arr.forEach((item) => {
+              if (item === 1) {
+                count1++;
+              } else {
+                count0++;
+              }
+            });
+            finalData.winner.y.push(count1);
+            finalData.loser.y.push(count0);
+          });
+
+          return finalData;
+        }
+        function renderProfitChart(wholeData) {
+          const data = {
+            labels: wholeData.x,
+
+            datasets: [
+              {
+                label: "Cumulative Profit",
+                backgroundColor: "rgb(255, 99, 132)",
+                borderColor: "rgb(255, 99, 132)",
+                data: wholeData.y,
+              },
+            ],
+          };
+
+          const config = {
+            type: "line",
+            data: data,
+            options: {},
+          };
+
+          const myChart = new Chart(
+            document.getElementById("hourlyProfitChart"),
+            config
+          );
+          return myChart;
+        }
+
+        function renderDrawdownChart(data_chart) {
+          const data = {
+            labels: data_chart.x,
+
+            datasets: [
+              {
+                label: "Drawdown",
+                backgroundColor: "rgb(255, 99, 132)",
+                borderColor: "rgb(255, 99, 132)",
+                data: data_chart.y.map((value) => {
+                  return -value;
+                }),
+              },
+            ],
+          };
+
+          const config = {
+            type: "bar",
+            data: data,
+            options: {},
+          };
+
+          const myChart = new Chart(
+            document.getElementById("drawdownChart"),
+            config
+          );
+          return myChart;
+        }
+
+        function renderStockPieChart(data_chart) {
+          const data = {
+            labels: data_chart.x,
+            datasets: [
+              {
+                data: data_chart.y,
+                backgroundColor: data_chart.y.map(() => {
+                  return randomColor();
+                }),
+              },
+            ],
+          };
+
+          const config = {
+            type: "pie",
+            data: data,
+            options: {
+              radius: 200,
+              plugins: {
+                legend: {
+                  position: "right",
+                },
+              },
+            },
+          };
+
+          const myChart = new Chart(
+            document.getElementById("stockPieChart"),
+            config
+          );
+          return myChart;
+        }
+
+        function renderPercentReturnChart(data_chart) {
+          const data = {
+            labels: data_chart.x,
+
+            datasets: [
+              {
+                label: "Percentage Return",
+                backgroundColor: data_chart.y.map((value) => {
+                  if (value > 0) {
+                    return "rgb(255, 99, 132)";
+                  } else {
+                    return "rgb(99, 99, 255)";
+                  }
+                }),
+
+                data: data_chart.y,
+              },
+            ],
+          };
+
+          const config = {
+            type: "bar",
+            data: data,
+            options: {},
+          };
+
+          const myChart = new Chart(
+            document.getElementById("percentReturnChart"),
+            config
+          );
+          return myChart;
+        }
+
+        function renderWinLossChart(data_chart) {
+          const data = {
+            labels: data_chart.winner.x,
+            datasets: [
+              {
+                label: "Winner",
+                backgroundColor: "rgb(255, 99, 132)",
+                borderColor: "rgb(255, 99, 132)",
+                data: data_chart.winner.y,
+              },
+              {
+                label: "Loser",
+                backgroundColor: "rgb(99, 99, 255)",
+                borderColor: "rgb(99, 99, 255)",
+                data: data_chart.loser.y,
+              },
+            ],
+          };
+
+          const config = {
+            type: "bar",
+            data: data,
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Win/Loss",
+                },
+              },
+              responsive: true,
+              scales: {
+                x: {
+                  stacked: true,
+                },
+                y: {
+                  stacked: true,
+                },
+              },
+            },
+          };
+
+          const myChart = new Chart(
+            document.getElementById("winLossChart"),
+            config
+          );
+          return myChart;
+        }
       });
+      function randomColor() {
+        return "#" + Math.floor(Math.random() * 16777215).toString(16);
+      }
+      function dateHelpers() {
+        function getMonth(month) {
+          let month_name = "";
+          switch (month) {
+            case "01":
+              month_name = "Jan";
+              break;
+            case "02":
+              month_name = "Feb";
+              break;
+            case "03":
+              month_name = "Mar";
+              break;
+            case "04":
+              month_name = "Apr";
+              break;
+            case "05":
+              month_name = "May";
+              break;
+            case "06":
+              month_name = "Jun";
+              break;
+            case "07":
+              month_name = "Jul";
+              break;
+            case "08":
+              month_name = "Aug";
+              break;
+            case "09":
+              month_name = "Sep";
+              break;
+            case "10":
+              month_name = "Oct";
+              break;
+            case "11":
+              month_name = "Nov";
+              break;
+            case "12":
+              month_name = "Dec";
+              break;
+          }
+          return month_name;
+        }
+
+        function getFormatedWeek(date, firstTradeDate) {
+          let date_array = date.split("-");
+          let year = date_array[0];
+          let month = date_array[1];
+          let day = date_array[2];
+
+          let fdate_array = firstTradeDate.split("-");
+          let fyear = fdate_array[0];
+          let fmonth = fdate_array[1];
+          let fday = fdate_array[2];
+
+          let daysCountFromFirstTrade =
+            (new Date(year, month, day).getTime() -
+              new Date(fyear, fmonth, fday).getTime()) /
+            (1000 * 60 * 60 * 24);
+
+          let week =
+            "Week " +
+            (Math.floor(daysCountFromFirstTrade / 7) + 1) +
+            " of " +
+            getMonth(month);
+          return week;
+        }
+
+        function getFormatedHour(buy) {
+          return (
+            buy["date"].split("-")[2] +
+            " " +
+            getMonth(buy["date"].split("-")[1]) +
+            " " +
+            buy["date"].split("-")[0] +
+            " at " +
+            buy["time"].split(".")[0].split(":")[0]
+          );
+        }
+
+        function getFormatedDate(buy) {
+          return (
+            buy["date"].split("-")[2] +
+            " " +
+            getMonth(buy["date"].split("-")[1]) +
+            " " +
+            buy["date"].split("-")[0]
+          );
+        }
+
+        function getFormatedMonth(buy) {
+          return (
+            getMonth(buy["date"].split("-")[1]) +
+            " " +
+            buy["date"].split("-")[0]
+          );
+        }
+
+        function getFormatedYear(buy) {
+          return buy["date"].split("-")[0];
+        }
+        return {
+          getMonth: getMonth,
+
+          getFormatedHour: getFormatedHour,
+          getFormatedDate: getFormatedDate,
+          getFormatedWeek: getFormatedWeek,
+          getFormatedMonth: getFormatedMonth,
+          getFormatedYear: getFormatedYear,
+        };
+      }
     </script>
   </body>
 </html>
