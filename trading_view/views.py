@@ -59,7 +59,7 @@ def data(request, *args, **kwargs):
 
             print("Done Finding")
             # If it has corrosponding and it is a close position 
-            if stockinfo and dict_data["strategy"]["order_id"] != "LONG":
+            if stockinfo and str(dict_data["strategy"]["order_id"]).startswith("LONG"):
                 print("Found and i am in closing positing right now", stockinfo)
                 # Getting Corrosponding data
                 sell = Stock_Data.objects.get(id=stockinfo.sell.id)
@@ -97,7 +97,7 @@ def data(request, *args, **kwargs):
                 stockinfo.buy = buy_model
                 stockinfo.save()
                 print("stockinfo updated", stockinfo)
-            elif dict_data["strategy"]["order_id"] == "LONG":
+            elif str(dict_data["strategy"]["order_id"]).startswith("LONG"):
                 # strategy, created = Strategy.objects.get_or_create(name=dict_data["strategy_name"])
                 stockinfo = StockInfo.objects.create(strategy=strategy, buy = buy_model )
                 print("Saving model", stockinfo)
@@ -127,7 +127,7 @@ def data(request, *args, **kwargs):
 
             print("Done Finding")
             # If it has corrosponding and it is a close position 
-            if stockinfo and dict_data["strategy"]["order_id"] != "SHORT":
+            if stockinfo and str(dict_data["strategy"]["order_id"]).startswith("SHORT"):
                 print("Found and i am in closing positing right now", stockinfo)
                 # Getting Corrosponding data
                 buy = Stock_Data.objects.get(id=stockinfo.buy.id)
@@ -168,7 +168,7 @@ def data(request, *args, **kwargs):
                 # total = amt - stockinfo.buy.amt  
                 # stockinfo.total = total
                 print("Updateing model")
-            elif dict_data["strategy"]["order_id"] == "SHORT":
+            elif str(dict_data["strategy"]["order_id"]).startswith("SHORT"):
                 # strategy, created = Strategy.objects.get_or_create(name=dict_data["strategy_name"])
                 stockinfo = StockInfo.objects.create(strategy=strategy, sell = sell_model )
                 print("Saving model", stockinfo)
