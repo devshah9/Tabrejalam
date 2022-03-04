@@ -37,15 +37,13 @@ def data(request, *args, **kwargs):
 
             # buy model
             print("Making a buy model")
-            brk = float(dict_data["strategy"]["order_price"])*0.0001  
-            nrate = float(dict_data["strategy"]["order_price"]) + brk
-            amt = nrate*float(dict_data["strategy"]["order_contracts"])
+            amt = float(dict_data["strategy"]["order_price"])*float(dict_data["strategy"]["order_contracts"])
             buy_model  = Stock_Data.objects.create(
                 time_frame=dict_data["timeframe"], 
                 stockname=dict_data["ticker"], 
                 quanty=dict_data["strategy"]["order_contracts"], 
                 price = dict_data["strategy"]["order_price"], 
-                brk = brk, nrate = nrate, amt = amt
+                amt = amt
                 )
             print("Made a buy model", buy_model)
             
@@ -59,17 +57,18 @@ def data(request, *args, **kwargs):
 
             print("Done Finding")
             # If it has corrosponding and it is a close position 
-            if stockinfo and str(dict_data["strategy"]["order_id"]).startswith("LONG"):
+            if stockinfo and not str(dict_data["strategy"]["order_id"]).startswith("LONG"):
                 print("Found and i am in closing positing right now", stockinfo)
                 # Getting Corrosponding data
                 sell = Stock_Data.objects.get(id=stockinfo.sell.id)
-                print(sell.quanty, -dict_data["strategy"]["order_contracts"], sell.quanty < -dict_data["strategy"]["order_contracts"])
-                if sell.quanty < -dict_data["strategy"]["order_contracts"]: 
+                print(round(sell.quanty, 8), -dict_data["strategy"]["order_contracts"], round(sell.quanty, 8) < -dict_data["strategy"]["order_contracts"])
+                if round(sell.quanty, 8) < -dict_data["strategy"]["order_contracts"]: 
                     print("We have more stock quanity and selling some")
                     # Changing old sell
                     previous_quanty = -sell.quanty
                     sell.quanty = -dict_data["strategy"]["order_contracts"]
-                    sell.amt = sell.nrate*sell.quanty
+                    #sell.price=dict_data["strategy"]["order_price"]
+                    sell.amt =sell.price*sell.quanty
                     print(49, sell.amt)
                     sell.save()
                     print("Stockdata Updated", sell)
@@ -79,7 +78,7 @@ def data(request, *args, **kwargs):
                     
                     # Creating new sell
                     new_quanty = previous_quanty - dict_data["strategy"]["order_contracts"]
-                    amt = nrate*new_quanty
+                    amt = sell.price*new_quanty
                     new_sell = Stock_Data.objects.create(
                         time        = sell.time,
                         time_frame  = sell.time_frame,
@@ -87,8 +86,6 @@ def data(request, *args, **kwargs):
                         stockname   = sell.stockname,
                         quanty      = -new_quanty,
                         price       = sell.price,
-                        brk         = sell.brk,
-                        nrate       = sell.nrate,
                         amt         = -amt 
                         )
                     print("Stock_Data for sell has been created", new_sell)
@@ -106,15 +103,13 @@ def data(request, *args, **kwargs):
 
             # sell model
             print("make a sell model")
-            brk = float(dict_data["strategy"]["order_price"])*0.0001
-            nrate = float(dict_data["strategy"]["order_price"]) - brk
-            amt = nrate*float(dict_data["strategy"]["order_contracts"])
+            amt = float(dict_data["strategy"]["order_price"])*float(dict_data["strategy"]["order_contracts"])
             sell_model  = Stock_Data.objects.create(
                 time_frame=dict_data["timeframe"], 
                 stockname=dict_data["ticker"], 
                 quanty= -dict_data["strategy"]["order_contracts"], 
                 price = dict_data["strategy"]["order_price"], 
-                brk = brk, nrate = nrate, amt = -amt
+                amt = -amt
                 )
             print("Made a sell model", sell_model)
 
@@ -127,17 +122,18 @@ def data(request, *args, **kwargs):
 
             print("Done Finding")
             # If it has corrosponding and it is a close position 
-            if stockinfo and str(dict_data["strategy"]["order_id"]).startswith("SHORT"):
+            if stockinfo and not str(dict_data["strategy"]["order_id"]).startswith("SHORT"):
                 print("Found and i am in closing positing right now", stockinfo)
                 # Getting Corrosponding data
                 buy = Stock_Data.objects.get(id=stockinfo.buy.id)
-                print(buy.quanty, dict_data["strategy"]["order_contracts"], buy.quanty > dict_data["strategy"]["order_contracts"])
-                if buy.quanty > dict_data["strategy"]["order_contracts"]:
+                print(round(buy.quanty, 8), -dict_data["strategy"]["order_contracts"], round(buy.quanty, 8) > dict_data["strategy"]["order_contracts"])
+                if round(buy.quanty, 8) > dict_data["strategy"]["order_contracts"]:
                     print("We have selled more stock quanity and buy some")
                     # Changing old buy 
                     previous_quanty = buy.quanty
                     buy.quanty = dict_data["strategy"]["order_contracts"]
-                    buy.amt = buy.nrate*buy.quanty
+                    #buy.price=dict_data["strategy"]["order_price"]
+                    buy.amt = buy.price*buy.quanty
                     print(100, buy.amt)
                     buy.save()
                     print("Stockdata Updated", buy)
@@ -147,7 +143,7 @@ def data(request, *args, **kwargs):
                     
                     # Creating new buy
                     new_quanty = previous_quanty - dict_data["strategy"]["order_contracts"]
-                    amt = nrate*new_quanty
+                    amt = buy.price*new_quanty
                     new_buy = Stock_Data.objects.create(
                         time        = buy.time,
                         time_frame  = buy.time_frame,
@@ -155,8 +151,6 @@ def data(request, *args, **kwargs):
                         stockname   = buy.stockname,
                         quanty      = new_quanty,
                         price       = buy.price,
-                        brk         = buy.brk,
-                        nrate       = buy.nrate,
                         amt         = amt 
                         )
                     print("Stock_Data for sell has been created", new_buy)
@@ -282,13 +276,9 @@ def StockAllViewSet(request, *args, **kwargs):
 # TIME	DATE	STOCK_NAME
 # Buy_QTY
 # Buy_Price
-# Buy_BRK
-# Buy_NRATE
 # Buy_AMT
 # Sell	Time_FRAME
 # TIME	DATE	STOCK_NAME
 # Sell_QTY
 # Sell_Price
-# Sell_BRK
-# Sell_NRATE
 # Sell_AMT

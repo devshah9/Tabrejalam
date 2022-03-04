@@ -22,8 +22,6 @@ class Migration(migrations.Migration):
                 ('stockname', models.CharField(max_length=120)),
                 ('quanty', models.FloatField()),
                 ('price', models.FloatField()),
-                ('brk', models.FloatField()),
-                ('nrate', models.FloatField()),
                 ('amt', models.FloatField()),
             ],
         ),

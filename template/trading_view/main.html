@@ -22,8 +22,6 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
     />
-
-     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -171,7 +169,6 @@
               <th>Price</th>
               <th>AMT</th>
               <th>Total</th>
-              <th>Delete</th>
             </tr>
           </thead>
 
@@ -859,12 +856,12 @@
             if (data[i]["total"] !== null) {
               text += `<td class=" table-secondary">${Number(
                 -data[i]["total"]
-              ).toFixed(3)}</td>`;
-          } else {
-            text += `<td class="table-secondary"></td>`;
+              ).toFixed(3)}</td>
+            </tr>`;
+            } else {
+              text += `<td class="table-secondary"></td>
+            </tr>`;
             }
-            text += `<td class="table-secondary">${data[i]["id"]}<span class="material-icons">delete</span></td>
-            </tr>`
           }
           const elements = document.getElementById("data");
           elements.innerHTML = text;
