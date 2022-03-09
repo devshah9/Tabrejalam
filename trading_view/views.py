@@ -215,7 +215,7 @@ class TradeByViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(strategy__name = strategy_name)
         if self.request.query_params.get('stockName'):
             stockname = self.request.query_params.get('stockName')
-            queryset = queryset.filter(buy__name = stockname)
+            queryset = queryset.filter(buy__stockname = stockname)
         return queryset
     serializer_class = Stockinfoserializer
 
