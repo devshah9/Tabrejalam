@@ -3,7 +3,7 @@ from rest_framework import routers
 from . import views
 
 router = routers.DefaultRouter('api')
-router.register(r'Strategy', views.StrategyViewSet)
+router.register(r'strategy/all', views.StrategyViewSet)
 router.register(r'trade/by', views.TradeByViewSet, basename="Stockinfo")
 router.register(r'trade/all', views.TradeAllViewSet, basename="Stockinfo")
 
