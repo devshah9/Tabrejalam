@@ -29,7 +29,7 @@ django-cors-headers==3.11.0
 django-heroku==0.3.1
 django-templated-mail==1.1.1
 djangorestframework==3.12.4
-djangorestframework-simplejwt==5.1.0
+djangorestframework-simplejwt
 djoser==2.1.0
 entrypoints==0.3
 enum34==1.1.10
