@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
-from pickle import TRUE
+import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -191,7 +192,7 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'tradingpipe960@gmail.com' 
-EMAIL_HOST_PASSWORD = 'TABREJALAM'
+EMAIL_HOST_PASSWORD = 'oiteeedfnscavmck'
 EMAIL_USE_TLS = True
 
 
@@ -220,3 +221,5 @@ DJOSER = {
 
 
 AUTH_USER_MODEL = 'accounts.UserAccount'
+
+django_heroku.settings(locals())
