@@ -5,3 +5,5 @@ tabrej*
 Frontend
 *.zip
 *.ipynb
+*.pyc
+00*

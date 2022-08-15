@@ -57,13 +57,14 @@ class ChatConsumer(JsonWebsocketConsumer):
             model_instance = StockInfo.objects.all()
         serializer = Stockinfoserializer(model_instance, many=True)
         strategyserializers = Strategyserializers(strategy_instance, many=True) 
+        print(60, serializer.data, strategyserializers.data)
         self.send_json({
             'type': 'events.alarm',
             'data': serializer.data,
             'strategy': strategyserializers.data, 
     })
     def events_alarm(self, event):
-        # print(event["content"])
+        print(67, event["content"])
         # receive_data = json.loads(text_data)
         model_instance = StockInfo.objects.all()
         serializer = Stockinfoserializer(model_instance, many=True)
