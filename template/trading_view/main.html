@@ -379,7 +379,7 @@
             "clear-search"
           ).innerHTML = `<a href="${window.location.origin}"><button class="btn btn-dark btn-sm  " >Clear filters</button></a>`;
         }
-        var socket = new WebSocket("ws://" + window.location.host);
+        var socket = new WebSocket("ws://" + window.location.host + ":8001/");
 
         if (socket.readyState == WebSocket.OPEN) {
           socket.onopen();
