@@ -207,7 +207,7 @@ DJOSER = {
     'SET_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'ACTIVATION_URL': '{auth}/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS':{
         'user_create': 'accounts.serializers.UserCreateSerializer',
@@ -219,5 +219,5 @@ DJOSER = {
 }
 
 
-# AUTH_USER_MODEL = 'accounts.UserAccount'
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'accounts.UserAccount'
+# AUTH_USER_MODEL = 'accounts.CustomUser'
