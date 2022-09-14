@@ -5,7 +5,7 @@ from django.db.models.fields.related import ForeignKey
 
 # Create your models here.
 class Strategy(models.Model):
-    name = CharField(max_length=40, unique=True)
+    name = CharField(max_length=40)#, unique=True)
 
 class Stock_Data(models.Model):
     time        = models.TimeField(auto_now=True)
